@@ -1,3 +1,4 @@
+include_directories(${Boost_INCLUDE_DIR})
 # We need 3.8 for set(CMAKE_CXX_STANDARD 17)
 cmake_minimum_required(VERSION 3.8)
 
@@ -16,7 +17,7 @@ endif ()
 set(CMAKE_CONFIGURATION_TYPES Debug RelWithDebInfo Release CACHE TYPE INTERNAL)
 set(ARCH native CACHE STRING "CPU to build for: -march value or native")
 
-project(TurtleCoin)
+project(SILIUS)
 
 # Required for finding Threads on ARM
 enable_language(C)
@@ -241,18 +242,42 @@ if (NOT MSVC)
     endif ()
 endif ()
 
+
+
+
+
+
 ## Go get us some static BOOST libraries
+
+FIND_PACKAGE(Boost)
+
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "C:/Program Files/boost/boost")
+SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/Program Files/boost/libs")
+
+IF (Boost_FOUND)
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+    ADD_DEFINITIONS( "-DHAS_BOOST" )
+ENDIF()
+
 set(Boost_NO_BOOST_CMAKE ON)
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_STATIC_RUNTIME ON)
+
+
 find_package(Boost REQUIRED COMPONENTS system thread date_time chrono serialization)
-message(STATUS "Boost Found: ${Boost_INCLUDE_DIRS}")
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+message(STATUS "Boost Found: ${Boost_INCLUDE_DIR}")
+include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 if (APPLE)
     set(Boost_LIBRARIES "${Boost_LIBRARIES}")
 elseif (NOT MSVC)
     set(Boost_LIBRARIES "${Boost_LIBRARIES};rt")
 endif ()
+
+
+
+
+
+
 
 ## Let's see if we have any OpenSSL static libraries available
 set(OPENSSL_USE_STATIC_LIBS ON)
